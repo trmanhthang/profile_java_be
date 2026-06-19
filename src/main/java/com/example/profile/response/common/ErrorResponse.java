@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 public class ErrorResponse {
-    public static ResponseEntity<?> build(String data, String message, HttpStatus httpStatus) {
+    public static ResponseEntity<?> build(Object data, String message, HttpStatus httpStatus) {
         return new ResponseEntity<>(new DataResponse(data, message, httpStatus), httpStatus);
     }
 }
