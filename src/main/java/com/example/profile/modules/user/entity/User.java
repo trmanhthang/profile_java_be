@@ -27,6 +27,12 @@ public class User extends BaseEntity {
     @Column(name = "full_name")
     private String fullName;
 
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
     private String avatar;
 
     @Size(min = 10, max = 11)
