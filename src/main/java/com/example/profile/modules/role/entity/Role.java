@@ -1,6 +1,6 @@
 package com.example.profile.modules.role.entity;
 
-import com.example.profile.entity.BaseEntity;
+import com.example.profile.common.entity.BaseEntity;
 import com.example.profile.shared.enums.Roles;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

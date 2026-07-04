@@ -15,7 +15,10 @@ public class RegisterRequest {
     private String password;
 
     @NotBlank(message = "Họ và tên không được để trống!")
-    private String fullName;
+    private String firstName;
+
+    @NotBlank(message = "")
+    private String lastName;
 
     private String email;
 
