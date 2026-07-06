@@ -2,7 +2,7 @@ package com.example.profile.modules.user.controller;
 
 import com.example.profile.modules.user.request.RegisterRequest;
 import com.example.profile.modules.user.service.IAuthenticationService;
-import com.example.profile.response.common.ApiResponse;
+import com.example.profile.shared.common.ApiResponse;
 import com.example.profile.shared.annotation.LogApi;
 import com.example.profile.shared.constant.AuthenticationMessageConstant;
 import lombok.RequiredArgsConstructor;

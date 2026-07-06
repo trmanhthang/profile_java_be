@@ -1,6 +1,6 @@
 package com.example.profile.modules.skill.entity;
 
-import com.example.profile.common.entity.BaseEntity;
+import com.example.profile.shared.common.BaseEntity;
 import com.example.profile.shared.enums.Experienced;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

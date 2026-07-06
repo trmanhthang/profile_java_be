@@ -1,6 +1,6 @@
 package com.example.profile.modules.project.entity;
 
-import com.example.profile.common.entity.BaseEntity;
+import com.example.profile.shared.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

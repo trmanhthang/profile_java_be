@@ -1,9 +1,9 @@
 package com.example.profile.modules.user.entity;
 
-import com.example.profile.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.example.profile.shared.common.BaseEntity;
+import com.example.profile.shared.enums.Roles;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +14,13 @@ import lombok.Setter;
 @Table(name = "ma_user")
 public class User extends BaseEntity {
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, nullable = false)
     @Size(min = 8)
+    @NotBlank
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
+    @NotBlank
     private String password;
 
     @Column(unique = true)
@@ -34,6 +36,10 @@ public class User extends BaseEntity {
     private String lastName;
 
     private String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false )
+    private Roles role;
 
     @Size(min = 10, max = 11)
     private String phone;

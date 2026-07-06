@@ -16,4 +16,15 @@ public final class ErrorMessageConstant {
     public static final String NOT_FOUND_DATABASE_DELETE = "Không tồn tại dữ liệu trong hệ thống";
     public static final String NOT_FOUND_DATABASE_FIND = "Không tìm thấy dữ liệu trong hệ thống";
     public static final String NON_UNIQUE_RESULT = "Có nhiều hơn một giá trị trong hệ thống";
+    public static final String ACCESS_DENIED = "Bạn không có quyền truy cập tài nguyên này";
+    public static final String ERROR_BUSINESS = "Lỗi nghiệp vụ hệ thống";
+
+    public static final String TOKEN_EXPIRED = "Token đã hết hạn.";
+    public static final String TOKEN_INVALID = "Token không hợp lệ.";
+    public static final String TOKEN_MALFORMED = "Token không đúng định dạng.";
+    public static final String TOKEN_UNSUPPORTED = "Token không được hỗ trợ.";
+    public static final String TOKEN_SIGNATURE_INVALID = "Chữ ký token không hợp lệ.";
+    public static final String TOKEN_MISSING = "Vui lòng đăng nhập để tiếp tục.";
+    public static final String TOKEN_EMPTY = "Token không được để trống.";
+
 }
