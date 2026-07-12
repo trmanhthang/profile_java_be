@@ -3,17 +3,17 @@ package com.example.profile.shared.exception;
 import com.example.profile.shared.common.ApiResponse;
 import com.example.profile.shared.constant.ErrorMessageConstant;
 import com.example.profile.shared.exception.custom.BusinessException;
+import com.example.profile.shared.exception.custom.ResourceNotFoundException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.*;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -27,38 +27,67 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandling {
 
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<ApiResponse<List<FieldError>>> BindRequestException(BindException ex) {
-        log.error("Exception error data input: {}", ex.getMessage());
-        List<FieldError> fieldErrorList = ex.getBindingResult().getFieldErrors();
-        this.showLogException(ex.getStackTrace());
-        return ApiResponse.custom(fieldErrorList, ErrorMessageConstant.ERROR_INPUT, HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * các thiết tham số truyền vào controller trong truy vấn ở @RequestParem
-     */
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiResponse<String>> MissingParameter(MissingServletRequestParameterException ex) {
-        log.error("Exception missing parameter data input: {}", ex.getMessage());
-        this.showLogException(ex.getStackTrace());
-        return ApiResponse.custom(ex.getMessage(), ErrorMessageConstant.ERROR_INPUT_PARAMETER, HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * tham số truyền vào không hợp lệ ở controller
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<List<FieldError>>> ArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("Exception error invalid input: ");
-        List<FieldError> fieldErrorList = ex.getBindingResult().getFieldErrors();
-        return ApiResponse.custom(fieldErrorList, ErrorMessageConstant.ERROR_INPUT, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiResponse<List<FieldError>>> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex) {
+
+        return ApiResponse.custom(
+                ex.getBindingResult().getFieldErrors(),
+                ErrorMessageConstant.ERROR_INPUT,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<List<String>>> handleConstraintViolation(
+            ConstraintViolationException ex) {
+
+        List<String> errors = ex.getConstraintViolations()
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toList());
+
+        return ApiResponse.custom(
+                errors,
+                ErrorMessageConstant.ERROR_INPUT,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<String>> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex) {
+
+        String message = String.format(
+                "Tham số '%s' không đúng kiểu dữ liệu.",
+                ex.getName());
+
+        return ApiResponse.custom(
+                ex.getMessage(),
+                message,
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<String>> handleMissingParameter(
+            MissingServletRequestParameterException ex) {
+
+        String message = String.format(
+                "Thiếu tham số '%s'.",
+                ex.getParameterName());
+
+        return ApiResponse.custom(
+                null,
+                message,
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     /**
@@ -110,8 +139,8 @@ public class GlobalExceptionHandling {
     /**
      * không tìm thấy dữ liệu trong database khi theo tác tìm kiếm
      */
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ApiResponse<String>> NoSuchException(NoSuchElementException ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> ResourceNotFoundException(ResourceNotFoundException ex) {
         log.error("Exception not found in database no such: {}",  ex.getMessage());
         this.showLogException(ex.getStackTrace());
         return ApiResponse.custom(ex.getMessage(), ErrorMessageConstant.NOT_FOUND_DATABASE_FIND_NO_SUCH, HttpStatus.NOT_FOUND);
@@ -125,16 +154,6 @@ public class GlobalExceptionHandling {
         log.error("Exception not found in database when delete: {}", ex.getMessage());
         this.showLogException(ex.getStackTrace());
         return ApiResponse.custom(ex.getMessage(), ErrorMessageConstant.NOT_FOUND_DATABASE_DELETE, HttpStatus.NOT_FOUND);
-    }
-
-    /**
-     * không tìm thấy dữ liệu trong database khi theo tác tìm kiếm với các loại tìm kiếm cũ
-     */
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
-    public ResponseEntity<ApiResponse<String>> NotFoundException(ChangeSetPersister.NotFoundException ex) {
-        log.error("Exception not found in database: {}", ex.getMessage());
-        this.showLogException(ex.getStackTrace());
-        return ApiResponse.custom(ex.getMessage(), ErrorMessageConstant.NOT_FOUND_DATABASE_FIND, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -192,17 +211,6 @@ public class GlobalExceptionHandling {
         );
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiResponse<String>> constraintViolationException(
-            ConstraintViolationException ex) {
-
-        return ApiResponse.custom(
-                ex.getMessage(),
-                ErrorMessageConstant.ERROR_INPUT,
-                HttpStatus.BAD_REQUEST
-        );
-    }
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<String>> httpMessageNotReadableException(
             HttpMessageNotReadableException ex) {
@@ -210,17 +218,6 @@ public class GlobalExceptionHandling {
         return ApiResponse.custom(
                 ex.getMessage(),
                 ErrorMessageConstant.ERROR_INPUT,
-                HttpStatus.BAD_REQUEST
-        );
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<String>> methodArgumentTypeMismatchException(
-            MethodArgumentTypeMismatchException ex) {
-
-        return ApiResponse.custom(
-                ex.getMessage(),
-                ErrorMessageConstant.ERROR_INPUT_PARAMETER,
                 HttpStatus.BAD_REQUEST
         );
     }
@@ -239,6 +236,8 @@ public class GlobalExceptionHandling {
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ApiResponse<String>> missingRequestHeaderException(
             MissingRequestHeaderException ex) {
+
+        log.error("Thiếu Request Header: {}", ex.getHeaderName());
 
         return ApiResponse.custom(
                 ex.getMessage(),
@@ -270,7 +269,7 @@ public class GlobalExceptionHandling {
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<String>> businessException(
+    public ResponseEntity<ApiResponse<String>> handleBusiness(
             BusinessException ex) {
 
         return ApiResponse.custom(

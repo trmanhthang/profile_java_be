@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -43,4 +45,6 @@ public class User extends BaseEntity {
 
     @Size(min = 10, max = 11)
     private String phone;
+
+    private LocalDateTime dob;
 }

@@ -29,14 +29,14 @@ public abstract class BaseEntity {
     @Column(name = "public_id", length = 36, nullable = false, unique = true)
     private final String publicId = UUID.randomUUID().toString();
 
-    @Column(nullable = false, length = 36, name = "created_id")
+    @Column(length = 36, name = "created_id")
     @CreatedBy
     private String createdId;
 
     /**
      * Tên người tạo tự thêm
      * */
-    @Column(nullable = false, name = "created_by")
+    @Column(name = "created_by")
     private String createdBy;
 
     @CreatedDate

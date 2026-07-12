@@ -6,14 +6,14 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Builder
 public class ApiResponse<T> {
-    final String appName = "Profile";
-    final LocalDate date = LocalDate.now();
+    private final String appName = "Profile";
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private int status;
     private T result;
     private String message;

@@ -1,5 +1,6 @@
 package com.example.profile.config.security;
 
+import com.example.profile.config.jwt.JwtAuthenticationEntryPoint;
 import com.example.profile.config.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -76,6 +77,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthenticationFilter,
+            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             AuthenticationProvider authenticationProvider
     ) throws Exception {
 
@@ -85,7 +87,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(apiPrefix + "/authencaion/**").permitAll()
+                        auth.requestMatchers(apiPrefix + "/authentication/**").permitAll()
                                 .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter,
