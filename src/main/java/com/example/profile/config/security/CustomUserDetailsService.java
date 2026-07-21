@@ -1,6 +1,8 @@
 package com.example.profile.config.security;
+import com.example.profile.modules.user.entity.User;
+import com.example.profile.modules.user.repository.UserRepository;
+import com.example.profile.shared.constant.AuthenticationMessageConstant;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -8,8 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(AuthenticationMessageConstant.ACCOUNT_NOT_EXIST));
+
+        return new UserPrincipal(user);
     }
 }

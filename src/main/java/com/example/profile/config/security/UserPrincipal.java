@@ -1,6 +1,7 @@
 package com.example.profile.config.security;
 
 import com.example.profile.modules.user.entity.User;
+import com.example.profile.shared.enums.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,5 +65,11 @@ public class UserPrincipal implements UserDetails {
 
     public String getPublicId() {
         return user.getPublicId();
+    }
+
+    public Roles getRole() {return user.getRole();}
+
+    public int getVersion() {
+        return user.getVersion();
     }
 }

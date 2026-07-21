@@ -1,10 +1,13 @@
 package com.example.profile.modules.user.controller;
 
+import com.example.profile.modules.user.request.LoginRequest;
 import com.example.profile.modules.user.request.RegisterRequest;
+import com.example.profile.modules.user.response.AuthenticationResponse;
 import com.example.profile.modules.user.service.IAuthenticationService;
 import com.example.profile.shared.common.ApiResponse;
 import com.example.profile.shared.annotation.LogApi;
 import com.example.profile.shared.constant.AuthenticationMessageConstant;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,4 +28,12 @@ public class AuthenticationController {
         this.authenticationService.register(request);
         return ApiResponse.custom(null, AuthenticationMessageConstant.REGISTER_MESSAGE, HttpStatus.CREATED);
     }
+
+    @LogApi
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+        return ApiResponse.custom(this.authenticationService.login(request, response), AuthenticationMessageConstant.LOGIN_SUCCESS, HttpStatus.OK);
+    }
+
+    
 }

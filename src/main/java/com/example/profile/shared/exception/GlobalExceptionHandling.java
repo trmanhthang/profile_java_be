@@ -273,8 +273,8 @@ public class GlobalExceptionHandling {
             BusinessException ex) {
 
         return ApiResponse.custom(
-                ex.getMessage(),
                 ErrorMessageConstant.ERROR_BUSINESS,
+                ex.getMessage(),
                 ex.getStatus()
         );
     }
