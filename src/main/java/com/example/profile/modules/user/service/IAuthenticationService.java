@@ -2,6 +2,7 @@ package com.example.profile.modules.user.service;
 
 import com.example.profile.modules.user.request.LoginRequest;
 import com.example.profile.modules.user.request.RegisterRequest;
+import com.example.profile.modules.user.response.AccessTokenResponse;
 import com.example.profile.modules.user.response.AuthenticationResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -10,5 +11,5 @@ public interface IAuthenticationService {
 
     AuthenticationResponse login(LoginRequest request, HttpServletResponse response);
 
-    AuthenticationResponse refresh(String refreshToken);
+    AccessTokenResponse refresh(String refreshToken);
 }

@@ -144,7 +144,7 @@ public class JwtService {
             throw new BadCredentialsException(AuthenticationMessageConstant.TOKEN_SIGNATURE_INVALID);
 
         } catch (IllegalArgumentException ex) {
-            throw new InsufficientAuthenticationException(AuthenticationMessageConstant.TOKEN_EMPTY);
+            throw new InsufficientAuthenticationException(AuthenticationMessageConstant.TOKEN_MISSING);
 
         } catch (JwtException ex) {
             throw new BadCredentialsException(AuthenticationMessageConstant.TOKEN_INVALID);

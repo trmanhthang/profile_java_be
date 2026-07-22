@@ -31,16 +31,31 @@ public class RefreshTokenServiceImpl implements IRefreshTokenService {
     @Async
     public void save(String publicId, String refreshToken) {
         try {
-            this.redisService.set(PREFIX + publicId, refreshToken, Duration.ofMillis(refreshTokenExpiration));
+            this.redisService.set(
+                    PREFIX + publicId,
+                    refreshToken,
+                    Duration.ofMillis(refreshTokenExpiration)
+            );
         } catch (RedisConnectionFailureException exception) {
             log.error(exception.getMessage());
         }
     }
 
     @Override
+    public String get(String publicId) {
+        return this.redisService.get(
+                PREFIX + publicId,
+                String.class
+        );
+    }
+
+    @Override
     @Async
     public void addCookie(HttpServletResponse response, String token) {
-        ResponseCookie cookie = ResponseCookie.from(CookieName.REFRESH_TOKEN.getValue(), token)
+        ResponseCookie cookie = ResponseCookie.from(
+                                                      CookieName.REFRESH_TOKEN.getValue(),
+                                                      token
+                                              )
                                               .httpOnly(true)
                                               .secure(false)
                                               .sameSite("Strict")
@@ -48,6 +63,9 @@ public class RefreshTokenServiceImpl implements IRefreshTokenService {
                                               .maxAge(Duration.ofDays(30))
                                               .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader(
+                HttpHeaders.SET_COOKIE,
+                cookie.toString()
+        );
     }
 }

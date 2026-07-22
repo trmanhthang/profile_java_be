@@ -2,6 +2,7 @@ package com.example.profile.modules.user.controller;
 
 import com.example.profile.modules.user.request.LoginRequest;
 import com.example.profile.modules.user.request.RegisterRequest;
+import com.example.profile.modules.user.response.AccessTokenResponse;
 import com.example.profile.modules.user.response.AuthenticationResponse;
 import com.example.profile.modules.user.service.IAuthenticationService;
 import com.example.profile.shared.common.ApiResponse;
@@ -39,8 +40,8 @@ public class AuthenticationController {
 
     @LogApi
     @RequestMapping(method = RequestMethod.GET, value = "/refresh")
-    public ResponseEntity<ApiResponse<Object>> refresh(@CookieValue(value = "refresh_token") String refreshToken) {
-        AuthenticationResponse response = this.authenticationService.refresh(refreshToken);
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refresh(@CookieValue(value = "refresh_token") String refreshToken) {
+        AccessTokenResponse response = this.authenticationService.refresh(refreshToken);
         return ApiResponse.custom(response, AuthenticationMessageConstant.REGISTER_MESSAGE, HttpStatus.OK);
     }
 }

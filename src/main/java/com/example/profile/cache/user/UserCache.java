@@ -25,4 +25,17 @@ public class UserCache {
                                        .orElseThrow(UserNotFoundException::new);
         return UserCacheDto.build(user);
     }
+
+    @Cacheable(value = "user", key = "#publicId")
+    public UserCacheDto findByPublicId(String publicId) {
+        log.info(
+                "cacheable user with public_id: {}",
+                publicId
+        );
+
+        User user = this.userRepository.findByPublicId(publicId)
+                                       .orElseThrow(UserNotFoundException::new);
+
+        return UserCacheDto.build(user);
+    }
 }

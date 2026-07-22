@@ -51,7 +51,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     /**
-     * Phương thức kiểm tra mật khu còn hiệu lực không?
+     * Phương thức kiểm tra mật khẩu còn hiệu lực không?
      *
      */
     @Override

@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = authHeader.substring(7).trim();
 
         if (jwt.isBlank()) {
-            throw new JwtException(AuthenticationMessageConstant.TOKEN_EMPTY);
+            throw new JwtException(AuthenticationMessageConstant.TOKEN_MISSING);
         }
 
         try {
@@ -63,15 +63,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         customUserDetailsService.loadUserByUsername(username);
 
                 if (!userPrincipal.isEnabled()) {
-                    throw new DisabledException("Tài khoản đã bị vô hiệu hóa.");
+                    throw new DisabledException(AuthenticationMessageConstant.USER_DISABLE);
                 }
 
                 if (!userPrincipal.isAccountNonLocked()) {
-                    throw new LockedException("Tài khoản đang bị khóa.");
+                    throw new LockedException(AuthenticationMessageConstant.USER_LOCKED);
                 }
 
                 if (!userPrincipal.isAccountNonExpired()) {
-                    throw new DisabledException("Tài khoản đã hết hạn.");
+                    throw new DisabledException(AuthenticationMessageConstant.USER_NON_EXPIRED);
                 }
 
                 if (!userPrincipal.isCredentialsNonExpired()) {

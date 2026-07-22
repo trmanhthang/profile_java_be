@@ -1,7 +1,7 @@
 package com.example.profile.config.security;
+
 import com.example.profile.cache.user.UserCache;
 import com.example.profile.modules.user.dto.UserCacheDto;
-import com.example.profile.modules.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +16,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
         UserCacheDto user = this.userCache.findByUsername(username);
+
+        return new UserPrincipal(user);
+    }
+
+    public UserPrincipal loadUserByPublicId(String publicId) {
+        UserCacheDto user = this.userCache.findByPublicId(publicId);
 
         return new UserPrincipal(user);
     }
