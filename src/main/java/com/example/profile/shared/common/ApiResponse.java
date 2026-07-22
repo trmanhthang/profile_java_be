@@ -20,10 +20,11 @@ public class ApiResponse<T> {
 
     public static <T> ResponseEntity<ApiResponse<T>> custom(T payload, String message, HttpStatus status) {
         ApiResponse<T> data = ApiResponse.<T>builder()
-                .status(status.value())
-                .message(message)
-                .result(payload)
-                .build();
-        return ResponseEntity.status(status).body(data);
+                                         .status(status.value())
+                                         .message(message)
+                                         .result(payload)
+                                         .build();
+        return ResponseEntity.status(status)
+                             .body(data);
     }
 }

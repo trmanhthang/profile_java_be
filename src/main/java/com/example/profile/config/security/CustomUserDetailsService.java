@@ -1,7 +1,7 @@
 package com.example.profile.config.security;
+import com.example.profile.cache.user.UserCache;
+import com.example.profile.modules.user.dto.UserCacheDto;
 import com.example.profile.modules.user.entity.User;
-import com.example.profile.modules.user.repository.UserRepository;
-import com.example.profile.shared.constant.AuthenticationMessageConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,13 +11,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserCache userCache;
 
     @Override
     public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(AuthenticationMessageConstant.ACCOUNT_NOT_EXIST));
+        UserCacheDto user = this.userCache.findByUsername(username);
 
         return new UserPrincipal(user);
     }

@@ -1,5 +1,6 @@
 package com.example.profile.config.security;
 
+import com.example.profile.modules.user.dto.UserCacheDto;
 import com.example.profile.modules.user.entity.User;
 import com.example.profile.shared.enums.Roles;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
-    private final User user;
+    private final UserCacheDto user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -32,7 +33,8 @@ public class UserPrincipal implements UserDetails {
      * Phương thức kiểm tra tài khoản đã hết hạn chưa?
      * return fasle (không cho đăng nhập)
      * Ví dụ: đối với những tài khoản đùng thử (có thuộc tính thời gian)
-     * */
+     *
+     */
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
@@ -41,7 +43,8 @@ public class UserPrincipal implements UserDetails {
     /**
      * Phương thức kiểm tra tài khoản có bị khóa không?
      * return true (không cho đăng nhập)
-     * */
+     *
+     */
     @Override
     public boolean isAccountNonLocked() {
         return UserDetails.super.isAccountNonLocked();
@@ -49,7 +52,8 @@ public class UserPrincipal implements UserDetails {
 
     /**
      * Phương thức kiểm tra mật khu còn hiệu lực không?
-     * */
+     *
+     */
     @Override
     public boolean isCredentialsNonExpired() {
         return UserDetails.super.isCredentialsNonExpired();
@@ -57,7 +61,8 @@ public class UserPrincipal implements UserDetails {
 
     /**
      * Phương thức kiểm tra tài khoản có hoạt động không?
-     * */
+     *
+     */
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
@@ -67,7 +72,9 @@ public class UserPrincipal implements UserDetails {
         return user.getPublicId();
     }
 
-    public Roles getRole() {return user.getRole();}
+    public Roles getRole() {
+        return user.getRole();
+    }
 
     public int getVersion() {
         return user.getVersion();

@@ -5,9 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
 @Configuration
@@ -20,16 +25,23 @@ public class RedisConfig {
         return args -> {
             try (var connection = connectionFactory.getConnection()) {
                 String pong = connection.ping();
-                log.info("Redis connected successfully. PING -> {}", pong);
+                log.info(
+                        "Redis connected successfully. PING -> {}",
+                        pong
+                );
             } catch (Exception e) {
-                log.error("Failed to connect to Redis: {}", e.getMessage());
+                log.error(
+                        "Failed to connect to Redis: {}",
+                        e.getMessage()
+                );
             }
         };
     }
 
     @Bean
     RedisTemplate<String, Object> redisTemplate(
-            RedisConnectionFactory connectionFactory) {
+            RedisConnectionFactory connectionFactory
+    ) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);

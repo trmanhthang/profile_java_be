@@ -11,10 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,9 +28,19 @@ public class AuthenticationController {
 
     @LogApi
     @RequestMapping(method = RequestMethod.POST, value = "/login")
-    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
-        return ApiResponse.custom(this.authenticationService.login(request, response), AuthenticationMessageConstant.LOGIN_SUCCESS, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> login(
+            @RequestBody LoginRequest request,
+            HttpServletResponse response
+    ) {
+        return ApiResponse.custom(this.authenticationService.login(request, response),
+                                  AuthenticationMessageConstant.LOGIN_SUCCESS,
+                                  HttpStatus.OK);
     }
 
-    
+    @LogApi
+    @RequestMapping(method = RequestMethod.GET, value = "/refresh")
+    public ResponseEntity<ApiResponse<Object>> refresh(@CookieValue(value = "refresh_token") String refreshToken) {
+        AuthenticationResponse response = this.authenticationService.refresh(refreshToken);
+        return ApiResponse.custom(response, AuthenticationMessageConstant.REGISTER_MESSAGE, HttpStatus.OK);
+    }
 }

@@ -9,4 +9,6 @@ public interface IAuthenticationService {
     void register(RegisterRequest request);
 
     AuthenticationResponse login(LoginRequest request, HttpServletResponse response);
+
+    AuthenticationResponse refresh(String refreshToken);
 }

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "ma_user")
-public class  User extends BaseEntity {
+public class User extends BaseEntity {
 
     @Column(name = "username", unique = true, nullable = false)
     @Size(min = 8)

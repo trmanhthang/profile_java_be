@@ -35,7 +35,8 @@ public abstract class BaseEntity {
 
     /**
      * Tên người tạo tự thêm
-     * */
+     *
+     */
     @Column(name = "created_by")
     private String createdBy;
 
@@ -49,7 +50,8 @@ public abstract class BaseEntity {
 
     /**
      * Tên người chỉnh sửa cuối tự thêm
-     * */
+     *
+     */
     @Column(name = "last_modified_by")
     private String lastModifiedBy;
 
