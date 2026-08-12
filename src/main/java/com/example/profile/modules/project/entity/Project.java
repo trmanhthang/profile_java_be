@@ -16,7 +16,7 @@ public class Project extends BaseEntity {
 
     private String description;
 
-    private String thumbnail;
+     private String thumbnail;
 
     @Column(name = "source_url")
     private String sourceUrl;

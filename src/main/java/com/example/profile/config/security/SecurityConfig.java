@@ -2,6 +2,7 @@ package com.example.profile.config.security;
 
 import com.example.profile.config.jwt.JwtAuthenticationEntryPoint;
 import com.example.profile.config.jwt.JwtAuthenticationFilter;
+import com.example.profile.config.permission.ApiPermissionFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,12 +38,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(
-            CustomUserDetailsService service,
-            PasswordEncoder encoder) {
+    public AuthenticationProvider authenticationProvider(CustomUserDetailsService service, PasswordEncoder encoder) {
 
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(service);
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(service);
 
         provider.setPasswordEncoder(encoder);
 
@@ -51,8 +49,8 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration)
-            throws Exception {
+            AuthenticationConfiguration configuration
+    ) throws Exception {
 
         return configuration.getAuthenticationManager();
     }
@@ -67,10 +65,12 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
         return source;
     }
@@ -79,23 +79,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             JwtAuthenticationFilter jwtAuthenticationFilter,
+            ApiPermissionFilter apiPermissionFilter,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             AuthenticationProvider authenticationProvider
     ) throws Exception {
 
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(apiPrefix + "/authentication/**").permitAll()
-                                .anyRequest().authenticated())
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth.requestMatchers(apiPrefix + "/authentication/**")
+                                               .permitAll()
+                                               .anyRequest()
+                                               .authenticated())
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            )
+            .addFilterAfter(
+                    apiPermissionFilter,
+                    JwtAuthenticationFilter.class
+            )
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         return http.build();
     }

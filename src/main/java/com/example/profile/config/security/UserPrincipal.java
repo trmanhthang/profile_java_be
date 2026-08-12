@@ -79,4 +79,8 @@ public class UserPrincipal implements UserDetails {
     public int getVersion() {
         return user.getVersion();
     }
+
+    public Long getId() {
+        return user.getId();
+    }
 }

@@ -9,24 +9,32 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class UserCache {
     private final UserRepository userRepository;
 
-    @Cacheable(value = "user", key = "#username")
+    @Cacheable(
+            value = "user",
+            key = "#username",
+            unless = "#result == null")
     public UserCacheDto findByUsername(String username) {
         log.info(
                 "cacheable user with username: {}",
                 username
         );
-        User user = this.userRepository.findByUsername(username)
-                                       .orElseThrow(UserNotFoundException::new);
-        return UserCacheDto.build(user);
+        Optional<User> user = this.userRepository.findByUsername(username);
+
+        return user.map(UserCacheDto::build)
+                   .orElse(null);
     }
 
-    @Cacheable(value = "user", key = "#publicId")
+    @Cacheable(
+            value = "user",
+            key = "#publicId")
     public UserCacheDto findByPublicId(String publicId) {
         log.info(
                 "cacheable user with public_id: {}",

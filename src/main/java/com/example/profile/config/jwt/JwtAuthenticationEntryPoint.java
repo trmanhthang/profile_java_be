@@ -23,7 +23,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) {
-        log.warn("Authentication failed: {}", authException.getMessage());
         resolver.resolveException(request, response, null, authException);
     }
 }

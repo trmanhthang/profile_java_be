@@ -46,12 +46,13 @@ public class CacheRedisConfig {
         RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
                                                                        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                                                                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
+                                                                       .disableCachingNullValues()
                                                                        .entryTtl(Duration.ofMinutes(30));
 
         Map<String, RedisCacheConfiguration> configs = new HashMap<>();
 
         configs.put(
-                "user-settings",
+                "user",
                 defaultConfig.entryTtl(Duration.ofHours(1))
         );
 

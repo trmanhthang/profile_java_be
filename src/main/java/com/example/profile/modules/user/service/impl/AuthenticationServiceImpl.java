@@ -15,6 +15,7 @@ import com.example.profile.modules.user.service.IAuthenticationService;
 import com.example.profile.modules.user.service.IRefreshTokenService;
 import com.example.profile.shared.constant.AuthenticationMessageConstant;
 import com.example.profile.shared.enums.Roles;
+import com.example.profile.shared.exception.custom.UserNotFoundException;
 import com.example.profile.shared.exception.custom.UsernameAlreadyExistsException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,10 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
         ));
 
         UserCacheDto user = this.userCache.findByUsername(request.getUsername());
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
 
         UserPrincipal userPrincipal = new UserPrincipal(user);
 
