@@ -28,6 +28,10 @@ public class UserPermissionServiceImpl implements IUserPermissionService {
     @Override
     public boolean hasPermission(Long userId, Roles role, MethodApi method, String path) {
 
+        if (role.equals(Roles.ADMIN)) {
+            return true;
+        }
+
         List<PermissionCacheDto> permissions = this.userPermissionCache.findByUserId(userId);
         ApiCacheDto api = this.apiCache.findByUriAndMethod(
                 path,
